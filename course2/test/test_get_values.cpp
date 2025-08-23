@@ -11,6 +11,6 @@ TEST(test_tensor_values, tensor_values1) {
   f1.Rand();
   f1.Show();
 
-  LOG(INFO) << "Data in the first channel: " << f1.slice(0);
+  LOG(INFO) << "Data in the first channel: \n" << f1.slice(0);
   LOG(INFO) << "Data in the (1,1,1): " << f1.at(1, 1, 1);
 }

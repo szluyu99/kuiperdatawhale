@@ -159,6 +159,7 @@ void Tensor<float>::Padding(const std::vector<uint32_t>& pads,
                             float padding_value) {
   CHECK(!this->data_.empty());
   CHECK_EQ(pads.size(), 4);
+
   // 四周填充的维度
   uint32_t pad_rows1 = pads.at(0);  // up
   uint32_t pad_rows2 = pads.at(1);  // bottom
@@ -166,6 +167,37 @@ void Tensor<float>::Padding(const std::vector<uint32_t>& pads,
   uint32_t pad_cols2 = pads.at(3);  // right
 
   // 请补充代码
+  const uint32_t old_rows = this->rows();
+  const uint32_t old_cols = this->cols();
+  const uint32_t channels = this->channels();
+
+  const uint32_t new_rows = old_rows + pad_rows1 + pad_rows2;
+  const uint32_t new_cols = old_cols + pad_cols1 + pad_cols2;
+
+  arma::fcube new_data(new_rows, new_cols, channels,
+                       arma::fill::value(padding_value));
+
+  for (uint32_t c = 0; c < channels; ++c) {
+    const arma::fmat& old_slice = this->data_.slice(c);
+    arma::fmat& new_slice = new_data.slice(c);
+
+    // 将原始数据拷贝到中间区域
+    new_slice.submat(pad_rows1, pad_cols1,
+                     pad_rows1 + old_rows - 1,
+                     pad_cols1 + old_cols - 1) = old_slice;
+  }
+
+  // 更新 data_
+  this->data_ = std::move(new_data);
+
+  // 更新 raw_shapes_
+  if (channels == 1 && new_rows == 1) {
+    this->raw_shapes_ = {new_cols};
+  } else if (channels == 1) {
+    this->raw_shapes_ = {new_rows, new_cols};
+  } else {
+    this->raw_shapes_ = {channels, new_rows, new_cols};
+  }
 }
 
 void Tensor<float>::Fill(float value) {
@@ -204,6 +236,20 @@ void Tensor<float>::Show() {
 void Tensor<float>::Flatten(bool row_major) {
   CHECK(!this->data_.empty());
   // 请补充代码
+  const uint32_t total_elements = this->size();
+  if (row_major) {
+    // 行优先展平：按通道→行→列的顺序排列
+    std::vector<float> flat_values = this->values(true);
+    // 重塑为 1×N×1 的张量（表示一维向量）
+    this->data_.reshape(1, total_elements, 1);
+    // 用行优先顺序的数据填充
+    std::copy(flat_values.begin(), flat_values.end(), this->data_.memptr());
+  } else {
+    // 列优先展平：使用 Armadillo 默认的内存布局
+    this->data_.reshape(1, total_elements, 1);
+  }
+  // 更新原始形状为一维
+  this->raw_shapes_ = {total_elements};
 }
 
 void Tensor<float>::Rand() {
