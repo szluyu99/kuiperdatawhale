@@ -7,6 +7,7 @@
 #include <glog/logging.h>
 #include <gtest/gtest.h>
 #include <string>
+
 static std::string ShapeStr(const std::vector<int> &shapes) {
   std::ostringstream ss;
   for (int i = 0; i < shapes.size(); ++i) {
@@ -18,16 +19,14 @@ static std::string ShapeStr(const std::vector<int> &shapes) {
   return ss.str();
 }
 
+std::string bin_path("/ssd2/luzhenyu/szluyu99/kuiperdatawhale/course3/model_file/test_linear.pnnx.bin");
+std::string param_path("/ssd2/luzhenyu/szluyu99/kuiperdatawhale/course3/model_file/test_linear.pnnx.param");
+
 TEST(test_ir, pnnx_graph_ops) {
   using namespace kuiper_infer;
-  /**
-   * 如果这里加载失败，请首先考虑相对路径的正确性问题
-   */
-  std::string bin_path("course3/model_file/test_linear.pnnx.bin");
-  std::string param_path("course3/model_file/test_linear.pnnx.param");
+
   std::unique_ptr<pnnx::Graph> graph = std::make_unique<pnnx::Graph>();
   int load_result = graph->load(param_path, bin_path);
-  // 如果这里加载失败，请首先考虑相对路径(bin_path和param_path)的正确性问题
   ASSERT_EQ(load_result, 0);
   const auto &ops = graph->ops;
   for (int i = 0; i < ops.size(); ++i) {
@@ -38,14 +37,9 @@ TEST(test_ir, pnnx_graph_ops) {
 // 输出运算数
 TEST(test_ir, pnnx_graph_operands) {
   using namespace kuiper_infer;
-  /**
-   * 如果这里加载失败，请首先考虑相对路径的正确性问题
-   */
-  std::string bin_path("course3/model_file/test_linear.pnnx.bin");
-  std::string param_path("course3/model_file/test_linear.pnnx.param");
+
   std::unique_ptr<pnnx::Graph> graph = std::make_unique<pnnx::Graph>();
   int load_result = graph->load(param_path, bin_path);
-  // 如果这里加载失败，请首先考虑相对路径(bin_path和param_path)的正确性问题
   ASSERT_EQ(load_result, 0);
   const auto &ops = graph->ops;
   for (int i = 0; i < ops.size(); ++i) {
@@ -69,14 +63,9 @@ TEST(test_ir, pnnx_graph_operands) {
 // 输出运算数和参数
 TEST(test_ir, pnnx_graph_operands_and_params) {
   using namespace kuiper_infer;
-  /**
-   * 如果这里加载失败，请首先考虑相对路径的正确性问题
-   */
-  std::string bin_path("course3/model_file/test_linear.pnnx.bin");
-  std::string param_path("course3/model_file/test_linear.pnnx.param");
+
   std::unique_ptr<pnnx::Graph> graph = std::make_unique<pnnx::Graph>();
   int load_result = graph->load(param_path, bin_path);
-  // 如果这里加载失败，请首先考虑相对路径(bin_path和param_path)的正确性问题
   ASSERT_EQ(load_result, 0);
   const auto &ops = graph->ops;
   for (int i = 0; i < ops.size(); ++i) {
@@ -113,14 +102,9 @@ TEST(test_ir, pnnx_graph_operands_and_params) {
 
 TEST(test_ir, pnnx_graph_operands_customer_producer) {
   using namespace kuiper_infer;
-  /**
-   * 如果这里加载失败，请首先考虑相对路径的正确性问题
-   */
-  std::string bin_path("course3/model_file/test_linear.pnnx.bin");
-  std::string param_path("course3/model_file/test_linear.pnnx.param");
+
   std::unique_ptr<pnnx::Graph> graph = std::make_unique<pnnx::Graph>();
   int load_result = graph->load(param_path, bin_path);
-  // 如果这里加载失败，请首先考虑相对路径(bin_path和param_path)的正确性问题
   ASSERT_EQ(load_result, 0);
   const auto &operands = graph->operands;
   for (int i = 0; i < operands.size(); ++i) {
@@ -137,11 +121,7 @@ TEST(test_ir, pnnx_graph_operands_customer_producer) {
 
 TEST(test_ir, pnnx_graph_all) {
   using namespace kuiper_infer;
-  /**
-   * 如果这里加载失败，请首先考虑相对路径的正确性问题
-   */
-  std::string bin_path("course3/model_file/test_linear.pnnx.bin");
-  std::string param_path("course3/model_file/test_linear.pnnx.param");
+
   RuntimeGraph graph(param_path, bin_path);
   const bool init_success = graph.Init();
   ASSERT_EQ(init_success, true);
@@ -171,11 +151,7 @@ TEST(test_ir, pnnx_graph_all) {
 
 TEST(test_ir, pnnx_graph_all_homework) {
   using namespace kuiper_infer;
-  /**
-   * 如果这里加载失败，请首先考虑相对路径的正确性问题
-   */
-  std::string bin_path("course3/model_file/test_linear.pnnx.bin");
-  std::string param_path("course3/model_file/test_linear.pnnx.param");
+
   RuntimeGraph graph(param_path, bin_path);
   const bool init_success = graph.Init();
   ASSERT_EQ(init_success, true);
